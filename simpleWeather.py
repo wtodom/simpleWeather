@@ -22,16 +22,16 @@ parser = OptionParser()
 with open("private.json") as f:
 	private = json.loads(f.read())
 	api_key = private["api_key"]
-	location = private["full_location"]
+	loc = private["full_location"]
 
 
-parser.set_defaults(location=location)
+parser.set_defaults(location=loc)
 parser.add_option("-l", "--location")
 
 (options, args) = parser.parse_args()
 
 
-url = "https://api.forecast.io/forecast/{0}/{1}".format(api_key, location)
+url = "https://api.forecast.io/forecast/{0}/{1}".format(api_key, loc)
 
 response = requests.get(url).json()
 

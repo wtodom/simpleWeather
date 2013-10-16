@@ -1,4 +1,4 @@
 simpleWeather
 =============
 
-A simple command line weather app.
+A simple command-line weather app.

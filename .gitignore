@@ -1,3 +1,7 @@
+# personal files
+example_response.json
+private.json
+
 *.py[cod]
 
 # C extensions

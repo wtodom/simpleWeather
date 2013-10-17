@@ -76,12 +76,11 @@ def display_current_weather():
 	print("Current conditions: {0}".format(summary))
 	print("Current temperature: {0} degrees (".format(current_temp) + degrees[options.metric] + ")")
 	print("Winds: {0} ".format(current_wind) + speed[options.metric])
-	print("Chance of rain: {0}%".format(chance_of_rain))
+	print("Chance of precipitation: {0}%".format(chance_of_rain))
 	print("Intensity: {0}".format(intensity))
 	print()
 
 def display_hourly_forecast():
-	current_time = time.time()
 	day_summary = response["hourly"]["summary"]
 
 	print()
@@ -90,7 +89,7 @@ def display_hourly_forecast():
 	table = PrettyTable([
 		"Time",
 		"Summary",
-		"Rain",
+		"Precipitation",
 		"Intensity",
 		"Temperature",
 		"Wind",
@@ -112,6 +111,40 @@ def display_hourly_forecast():
 
 	print(table)
 
+def display_weekly_forecast():
+	week_summary = response["daily"]["summary"]
+
+	print()
+	print("Forecast for the coming week: {0}".format(week_summary))
+
+	table = PrettyTable([
+		"Day",
+		"Summary",
+		"Precipitation",
+		"Intensity",
+		"High",
+		"Low",
+		"Wind",
+		"Humidity"
+	])
+
+	for day in response["daily"]["data"]:
+		dt = time.ctime(day["time"]).split()
+		short_dt = dt[0] + " " + dt[1] + " " + dt[2]
+		table.add_row([
+			short_dt,
+			day["summary"],
+			str(int(day["precipProbability"]*100)) + "%",
+			day["precipIntensity"],
+			str(day["temperatureMax"]) + " (" + degrees[options.metric] + ")",
+			str(day["temperatureMin"]) + " (" + degrees[options.metric] + ")",
+			str(day["windSpeed"]) + " " + speed[options.metric],
+			str(int(day["humidity"]*100)) + "%"
+		])
+	print(table)
+
 display_current_weather()
 if options.today:
 	display_hourly_forecast()
+if options.week:
+	display_weekly_forecast()

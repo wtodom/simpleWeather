@@ -6,9 +6,11 @@ http://docs.python.org/3.3/library/json.html
 http://www.python-requests.org/en/latest/
 
 
-Made possible by the forecast.io API:
+Made possible by the following APIs:
 
 https://developer.forecast.io/
+http://freegeoip.net/
+http://ip.42.pl
 """
 
 import json
@@ -31,6 +33,16 @@ with open("private.json") as f:
 	api_key = private["api_key"]
 	loc = private["full_location"]
 
+	try:
+		ip = requests.get("http://ip.42.pl/raw").text
+		geo_url = "http://freegeoip.net/{0}/{1}".format("json", ip)
+		location_info = requests.get(geo_url).json()
+		longitude = str(location_info["longitude"])
+		latitude = str(location_info["latitude"])
+		loc = latitude + "," + longitude
+
+	except Exception as e:
+		print("Failed to detect location. Using default value from private.json")
 
 parser.set_defaults(location=loc, metric=False, debug=False)
 parser.add_option("-d", "--debug", action="store_true", help="show debug messages")

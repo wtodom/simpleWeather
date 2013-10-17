@@ -93,7 +93,6 @@ def display_hourly_forecast():
 		"Rain",
 		"Intensity",
 		"Temperature",
-		"Feels Like",
 		"Wind",
 		"Humidity"
 	])
@@ -107,7 +106,6 @@ def display_hourly_forecast():
 			str(int(hour["precipProbability"]*100)) + "%",
 			hour["precipIntensity"],
 			str(hour["temperature"]) + " (" + degrees[options.metric] + ")",
-			str(hour["apparentTemperature"]) + " (" + degrees[options.metric] + ")",
 			str(hour["windSpeed"]) + " " + speed[options.metric],
 			str(int(hour["humidity"]*100)) + "%"
 		])

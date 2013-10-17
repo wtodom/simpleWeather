@@ -13,9 +13,16 @@ https://developer.forecast.io/
 
 import json
 import requests
+import time
 from optparse import OptionParser
+from prettytable import PrettyTable
 
 
+NUM_HOURLY_RECORDS = 16
+
+speed = ["mph", "kph"]
+degrees = ["F", "C"]
+length = ["in", "cm"]
 parser = OptionParser()
 
 

@@ -10,8 +10,7 @@ Make a file called "private.json" and include the following data, replacing it w
 	{
 		"api_key": "MY_API_KEY",
 		"latitude": "MY_LATITUDE",
-		"longitude": "MY_LONGITUDE",
-		"full_location": "MY_LATITUDE, MY_LONGITUDE"
+		"longitude": "MY_LONGITUDE"
 	}
 
 You can register for an API key here: https://developer.forecast.io/register.

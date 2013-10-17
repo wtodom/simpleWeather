@@ -31,7 +31,7 @@ parser = OptionParser()
 with open("private.json") as f:
 	private = json.loads(f.read())
 	api_key = private["api_key"]
-	loc = private["full_location"]
+	loc = private["latitude"] + "," + private["longitude"]
 
 	try:
 		ip = requests.get("http://ip.42.pl/raw").text

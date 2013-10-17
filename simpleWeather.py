@@ -75,12 +75,30 @@ def display_hourly_forecast():
 	print()
 	print("Hourly forecast: {0}".format(day_summary))
 
-	table = PrettyTable(["Time", "Summary", "Rain", "Intensity", "Temperature", "Feels Like", "Wind", "Humidity"])
+	table = PrettyTable([
+		"Time",
+		"Summary",
+		"Rain",
+		"Intensity",
+		"Temperature",
+		"Feels Like",
+		"Wind",
+		"Humidity"
+	])
 
 	for hour in response["hourly"]["data"][0:NUM_HOURLY_RECORDS]:
 		dt = time.ctime(hour["time"]).split()
 		short_dt = dt[0] + " " + dt[3][0:5]
-		table.add_row([short_dt, hour["summary"], str(int(hour["precipProbability"]*100)) + "%", hour["precipIntensity"], hour["temperature"], hour["apparentTemperature"], hour["windSpeed"], hour["humidity"]])
+		table.add_row([
+			short_dt,
+			hour["summary"],
+			str(int(hour["precipProbability"]*100)) + "%",
+			hour["precipIntensity"],
+			str(hour["temperature"]) + " (" + degrees[options.metric] + ")",
+			str(hour["apparentTemperature"]) + " (" + degrees[options.metric] + ")",
+			str(hour["windSpeed"]) + " " + speed[options.metric],
+			str(int(hour["humidity"]*100)) + "%"
+		])
 
 	print(table)
 

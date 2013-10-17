@@ -14,4 +14,6 @@ Make a file called "private.json" and include the following data, replacing it w
 		"full_location": "MY_LATITUDE, MY_LONGITUDE"
 	}
 
+You can register for an API key here: https://developer.forecast.io/register.
+
 Once that's done, simply run the script using whatever method you prefer.

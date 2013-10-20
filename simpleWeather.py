@@ -1,10 +1,10 @@
 """
-A simple command-line weather app using the following Python modules:
+A simple command-line weather app using Python 3 and following modules:
 
 http://docs.python.org/3.3/library/optparse.html
 http://docs.python.org/3.3/library/json.html
 http://www.python-requests.org/en/latest/
-
+https://pypi.python.org/pypi/PrettyTable
 
 Made possible by the following APIs:
 
@@ -22,7 +22,7 @@ from prettytable import PrettyTable
 
 NUM_HOURLY_RECORDS = 16
 
-speed = ["mph", "kph"]
+speed = ["mph", "m/s"]
 degrees = ["F", "C"]
 length = ["in", "cm"]
 parser = OptionParser()
@@ -143,8 +143,9 @@ def display_weekly_forecast():
 		])
 	print(table)
 
-display_current_weather()
-if options.today:
-	display_hourly_forecast()
-if options.week:
-	display_weekly_forecast()
+if __name__ == "__main__":
+	display_current_weather()
+	if options.today:
+		display_hourly_forecast()
+	if options.week:
+		display_weekly_forecast()

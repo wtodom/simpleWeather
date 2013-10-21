@@ -23,7 +23,7 @@ other utilities required. The list is as follows:
 
 - Python modules
 	1. PrettyTable (availble via pip or at https://pypi.python.org/pypi/PrettyTable)
-	2. requests (available at http://www.python-requests.org/en/latest/)
+	2. requests (also available via pip/pypi or at http://www.python-requests.org/en/latest/)
 - gnuplot (available at http://www.gnuplot.info/)
 
 

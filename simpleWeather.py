@@ -6,11 +6,14 @@ http://docs.python.org/3.3/library/json.html
 http://www.python-requests.org/en/latest/
 https://pypi.python.org/pypi/PrettyTable
 
-Made possible by the following APIs:
+Major thanks to the creators of the following APIs:
 
 https://developer.forecast.io/
 http://freegeoip.net/
 http://ip.42.pl
+
+And also to the people over at gnuplot:
+http://www.gnuplot.info/
 """
 
 import json
@@ -102,10 +105,10 @@ def plot_weekly():
 	gnuplot.write("set tic scale 0\n".format(days[0], days[-1]).encode())
 
 	gnuplot.write("plot '-' u 1:2 w l, '-' u 1:3 w l\n".encode())
-	for line in plot_data:
+	for line in plot_data: # iterate through once for the lows 
 		gnuplot.write(line.encode())
 	gnuplot.write("e\n".encode())
-	for line in plot_data:
+	for line in plot_data: # then again for the highs (per gnuplot docs)
 		gnuplot.write(line.encode())
 	gnuplot.write("e\n".encode())
 	gnuplot.flush()

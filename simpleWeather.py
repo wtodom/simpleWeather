@@ -15,6 +15,7 @@ http://ip.42.pl
 
 import json
 import requests
+import subprocess
 import time
 from optparse import OptionParser
 from prettytable import PrettyTable
@@ -44,8 +45,9 @@ with open("private.json") as f:
 	except Exception as e:
 		print("Failed to detect location. Using default value from private.json")
 
-parser.set_defaults(location=loc, metric=False, debug=False)
+parser.set_defaults(debug=False, graphics=False, location=loc, metric=False, today=False, week=False)
 parser.add_option("-d", "--debug", action="store_true", help="show debug messages")
+parser.add_option("-g", "--graphics", action="store_true", help="display visuals for weekly forecasts")
 parser.add_option("-l", "--location", help="specify a location other than the default")
 parser.add_option("-m", "--metric", action="store_true", help="use metric rather than imperial units")
 parser.add_option("-t", "--today", action="store_true", help="display today's hourly forecast")
@@ -64,6 +66,38 @@ if options.metric:
 	url += "?units=si"
 
 response = requests.get(url).json()
+
+def plot_weekly():
+	highs = []
+	lows = []
+	rain = []
+	days = []
+	for day in response["daily"]["data"]:
+		highs.append(str(day["temperatureMax"]))
+		lows.append(str(day["temperatureMin"]))
+		rain.append(str(day["precipProbability"]))
+		days.append(str(time.ctime(day["time"]).split()[2]))
+
+
+	plot_data = []
+	for day, low in zip(days, lows):
+		plot_data.append(day + ", " + low + "\n")
+
+	gnuplot = subprocess.Popen(['gnuplot','-persist'], stdin=subprocess.PIPE).stdin
+	gnuplot.write("set terminal dumb\n".encode())
+	gnuplot.write("set title 'High and Low Temperatures'\n".encode())
+	gnuplot.write("set nokey\n".encode())
+	gnuplot.write("set xrange [{0}:{1}]\n".format(days[0], days[-1]).encode())
+	gnuplot.write("set yrange [0:100]\n".encode())
+	gnuplot.write("set ytics 0,5\n".encode())
+	gnuplot.write("set tic scale 0\n".format(days[0], days[-1]).encode())
+
+	gnuplot.write("plot '-' w l\n".encode())
+	for line in plot_data:
+		gnuplot.write(line.encode())
+	gnuplot.write("e\n".encode())
+	gnuplot.flush()
+
 
 def display_current_weather():
 	summary = response["currently"]["summary"]
@@ -145,6 +179,8 @@ def display_weekly_forecast():
 
 if __name__ == "__main__":
 	display_current_weather()
+	if options.graphics:
+		plot_weekly()
 	if options.today:
 		display_hourly_forecast()
 	if options.week:

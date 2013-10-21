@@ -30,6 +30,6 @@ other utilities required. The list is as follows:
 #### Okay, so how do I use it?
 
 Once you've got the simply run the script using whatever method you prefer.
-By default it jsut displays the current basic weather conditions. Several
+By default it just displays the current basic weather conditions. Several
 additional options are available; to see them run the script with the `-h`
 or `--help` flag.

@@ -19,6 +19,7 @@ http://www.gnuplot.info/
 import json
 import requests
 import subprocess
+import sys
 import time
 from optparse import OptionParser
 from prettytable import PrettyTable
@@ -69,7 +70,13 @@ url = "https://api.forecast.io/forecast/{0}/{1}".format(api_key, loc)
 if options.metric:
 	url += "?units=si"
 
-response = requests.get(url).json()
+try:
+	response = requests.get(url).json()
+except:
+	print("There was an error retrieving the forecast.")
+	print("Please check your internet connection and try again.")
+	sys.exit()
+
 
 def plot_weekly():
 	highs = []
@@ -107,7 +114,7 @@ def plot_weekly():
 	gnuplot.write("plot '-' u 1:2 w l, '-' u 1:3 w l\n".encode())
 	for line in plot_data: # iterate through once for the lows 
 		gnuplot.write(line.encode())
-	gnuplot.write("e\n".encode())
+	gnuplot.write("e\n".encode()) # 'e' is the end-of-input marker for gnuplot
 	for line in plot_data: # then again for the highs (per gnuplot docs)
 		gnuplot.write(line.encode())
 	gnuplot.write("e\n".encode())

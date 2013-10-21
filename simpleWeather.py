@@ -26,6 +26,7 @@ NUM_HOURLY_RECORDS = 16
 speed = ["mph", "m/s"]
 degrees = ["F", "C"]
 length = ["in", "cm"]
+
 parser = OptionParser()
 
 
@@ -80,19 +81,22 @@ def plot_weekly():
 
 
 	plot_data = []
-	for day, low in zip(days, lows):
-		plot_data.append(day + ", " + low + "\n")
+	for day, low, high in zip(days, lows, highs):
+		plot_data.append(day + "\t" + low + "\t" + high + "\n")
 
 	gnuplot = subprocess.Popen(['gnuplot','-persist'], stdin=subprocess.PIPE).stdin
 	gnuplot.write("set terminal dumb\n".encode())
-	gnuplot.write("set title 'High and Low Temperatures'\n".encode())
+	gnuplot.write("set title 'High and Low Temperatures for the Coming Week'\n".encode())
 	gnuplot.write("set nokey\n".encode())
 	gnuplot.write("set xrange [{0}:{1}]\n".format(days[0], days[-1]).encode())
 	gnuplot.write("set yrange [0:100]\n".encode())
 	gnuplot.write("set ytics 0,5\n".encode())
 	gnuplot.write("set tic scale 0\n".format(days[0], days[-1]).encode())
 
-	gnuplot.write("plot '-' w l\n".encode())
+	gnuplot.write("plot '-' u 1:2 w l, '-' u 1:3 w l\n".encode())
+	for line in plot_data:
+		gnuplot.write(line.encode())
+	gnuplot.write("e\n".encode())
 	for line in plot_data:
 		gnuplot.write(line.encode())
 	gnuplot.write("e\n".encode())

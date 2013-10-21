@@ -79,6 +79,14 @@ def plot_weekly():
 		rain.append(str(day["precipProbability"]))
 		days.append(str(time.ctime(day["time"]).split()[2]))
 
+	start_day = time.ctime(response["daily"]["data"][0]["time"]).split(" ")
+	start_day_pretty = start_day[0] + ' ' + start_day[1] + ' ' + start_day[2]
+
+	end_day = time.ctime(response["daily"]["data"][-1]["time"]).split(" ")
+	end_day_pretty = end_day[0] + ' ' + end_day[1] + ' ' + end_day[2]
+
+	period = start_day_pretty + " - " + end_day_pretty
+
 
 	plot_data = []
 	for day, low, high in zip(days, lows, highs):
@@ -86,7 +94,7 @@ def plot_weekly():
 
 	gnuplot = subprocess.Popen(['gnuplot','-persist'], stdin=subprocess.PIPE).stdin
 	gnuplot.write("set terminal dumb\n".encode())
-	gnuplot.write("set title 'High and Low Temperatures for the Coming Week'\n".encode())
+	gnuplot.write("set title 'High and Low Temperatures, {0}'\n".format(period).encode())
 	gnuplot.write("set nokey\n".encode())
 	gnuplot.write("set xrange [{0}:{1}]\n".format(days[0], days[-1]).encode())
 	gnuplot.write("set yrange [0:100]\n".encode())

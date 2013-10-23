@@ -28,7 +28,7 @@ from prettytable import PrettyTable
 NUM_HOURLY_RECORDS = 16
 
 speed = ["mph", "m/s"]
-degrees = ["F", "C"]
+degrees = ["°F", "°C"]
 length = ["in", "cm"]
 
 parser = OptionParser()
@@ -103,13 +103,8 @@ def plot_weekly():
 		plot_data.append(day + "\t" + low + "\t" + high + "\n")
 
 	gnuplot = subprocess.Popen(['gnuplot','-persist'], stdin=subprocess.PIPE).stdin
-	gnuplot.write("set terminal dumb\n".encode())
-	gnuplot.write("set title 'High and Low Temperatures, {0}'\n".format(period).encode())
-	gnuplot.write("set nokey\n".encode())
-	gnuplot.write("set xrange [{0}:{1}]\n".format(days[0], days[-1]).encode())
-	gnuplot.write("set yrange [0:100]\n".encode())
-	gnuplot.write("set ytics 0,5\n".encode())
-	gnuplot.write("set tic scale 0\n".format(days[0], days[-1]).encode())
+	plot_title = "'High and Low Temperatures, {0}'\n".format(period)
+	setup_gnuplot(gnuplot, plot_title, days[0], days[-1], 0, 100)
 
 	gnuplot.write("plot '-' u 1:2 w l, '-' u 1:3 w l\n".encode())
 	for line in plot_data: # iterate through once for the lows 
@@ -119,6 +114,15 @@ def plot_weekly():
 		gnuplot.write(line.encode())
 	gnuplot.write("e\n".encode())
 	gnuplot.flush()
+
+def setup_gnuplot(gnuplot_proc, title, xmin, xmax, ymin, ymax):
+	gnuplot_proc.write("set terminal dumb size 79, 26\n".encode()) # allows space for title and temp increments of 5
+	gnuplot_proc.write("set title {0}\n".format(title).encode())
+	gnuplot_proc.write("set nokey\n".encode())
+	gnuplot_proc.write("set xrange [{0}:{1}]\n".format(xmin, xmax).encode())
+	gnuplot_proc.write("set yrange [{0}:{1}]\n".format(ymin, ymax).encode())
+	gnuplot_proc.write("set ytics 0,5\n".encode())
+	gnuplot_proc.write("set tic scale 0\n".encode())
 
 
 def display_current_weather():
@@ -130,7 +134,7 @@ def display_current_weather():
 
 	print()
 	print("Current conditions: {0}".format(summary))
-	print("Current temperature: {0} degrees (".format(current_temp) + degrees[options.metric] + ")")
+	print("Current temperature: {0}".format(current_temp) + " " + degrees[options.metric])
 	print("Winds: {0} ".format(current_wind) + speed[options.metric])
 	print("Chance of precipitation: {0}%".format(chance_of_rain))
 	print("Intensity: {0}".format(intensity))
@@ -160,7 +164,7 @@ def display_hourly_forecast():
 			hour["summary"],
 			str(int(hour["precipProbability"]*100)) + "%",
 			hour["precipIntensity"],
-			str(hour["temperature"]) + " (" + degrees[options.metric] + ")",
+			str(hour["temperature"]) + " " + degrees[options.metric],
 			str(hour["windSpeed"]) + " " + speed[options.metric],
 			str(int(hour["humidity"]*100)) + "%"
 		])
@@ -192,8 +196,8 @@ def display_weekly_forecast():
 			day["summary"],
 			str(int(day["precipProbability"]*100)) + "%",
 			day["precipIntensity"],
-			str(day["temperatureMax"]) + " (" + degrees[options.metric] + ")",
-			str(day["temperatureMin"]) + " (" + degrees[options.metric] + ")",
+			str(day["temperatureMax"]) + " " + degrees[options.metric],
+			str(day["temperatureMin"]) + " " + degrees[options.metric],
 			str(day["windSpeed"]) + " " + speed[options.metric],
 			str(int(day["humidity"]*100)) + "%"
 		])

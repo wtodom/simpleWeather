@@ -16,6 +16,7 @@ And also to the people over at gnuplot:
 http://www.gnuplot.info/
 """
 
+import os
 import json
 import requests
 import subprocess
@@ -34,7 +35,7 @@ length = ["in", "cm"]
 parser = OptionParser()
 
 
-with open("private.json") as f:
+with open(os.path.join(os.path.dirname(__file__), "private.json")) as f:
 	private = json.loads(f.read())
 	api_key = private["api_key"]
 	loc = private["latitude"] + "," + private["longitude"]

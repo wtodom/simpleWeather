@@ -16,6 +16,7 @@ And also to the people over at gnuplot:
 http://www.gnuplot.info/
 """
 
+import datetime as dt
 import os
 import json
 import requests
@@ -88,7 +89,10 @@ def plot_weekly():
 		highs.append(str(day["temperatureMax"]))
 		lows.append(str(day["temperatureMin"]))
 		rain.append(str(day["precipProbability"]))
-		days.append(str(time.ctime(day["time"]).split()[2]))
+		try: # this may be too hacky, buuuut it works for now...
+			days.append(str(int(days[len(days) - 1]) + 1))
+		except IndexError:
+			days.append(str(dt.datetime.weekday(dt.datetime.fromtimestamp(day["time"])) + 1))
 
 	start_day = time.ctime(response["daily"]["data"][0]["time"]).split(" ")
 	start_day = list(filter(None, start_day)) # required since time.ctime() pads left with an extra space for 1-digit dates
@@ -100,13 +104,13 @@ def plot_weekly():
 
 	period = start_day_pretty + " - " + end_day_pretty
 
-
 	plot_data = []
 	for day, low, high in zip(days, lows, highs):
 		plot_data.append(day + "\t" + low + "\t" + high + "\n")
 
 	gnuplot = subprocess.Popen(['gnuplot','-persist'], stdin=subprocess.PIPE).stdin
 	plot_title = "'High and Low Temperatures, {0}'\n".format(period)
+
 	setup_gnuplot(gnuplot, plot_title, days[0], days[-1], 0, 100)
 
 	gnuplot.write("plot '-' u 1:2 w l, '-' u 1:3 w l\n".encode())
@@ -122,6 +126,7 @@ def setup_gnuplot(gnuplot_proc, title, xmin, xmax, ymin, ymax):
 	gnuplot_proc.write("set terminal dumb size 79, 26\n".encode()) # allows space for title and temp increments of 5
 	gnuplot_proc.write("set title {0}\n".format(title).encode())
 	gnuplot_proc.write("set nokey\n".encode())
+	gnuplot_proc.write("set xdtics\n".encode())
 	gnuplot_proc.write("set xrange [{0}:{1}]\n".format(xmin, xmax).encode())
 	gnuplot_proc.write("set yrange [{0}:{1}]\n".format(ymin, ymax).encode())
 	gnuplot_proc.write("set ytics 0,5\n".encode())

@@ -91,9 +91,11 @@ def plot_weekly():
 		days.append(str(time.ctime(day["time"]).split()[2]))
 
 	start_day = time.ctime(response["daily"]["data"][0]["time"]).split(" ")
+	start_day = list(filter(None, start_day)) # required since time.ctime() pads left with an extra space for 1-digit dates
 	start_day_pretty = start_day[0] + ' ' + start_day[1] + ' ' + start_day[2]
 
 	end_day = time.ctime(response["daily"]["data"][-1]["time"]).split(" ")
+	end_day = list(filter(None, end_day)) # required since time.ctime() pads left with an extra space for 1-digit dates
 	end_day_pretty = end_day[0] + ' ' + end_day[1] + ' ' + end_day[2]
 
 	period = start_day_pretty + " - " + end_day_pretty

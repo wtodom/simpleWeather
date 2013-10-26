@@ -89,17 +89,17 @@ def plot_weekly():
 		highs.append(str(day["temperatureMax"]))
 		lows.append(str(day["temperatureMin"]))
 		rain.append(str(day["precipProbability"]))
-		try: # this may be too hacky, buuuut it works for now...
+		try:  # this may be too hacky, buuuut it works for now...
 			days.append(str(int(days[len(days) - 1]) + 1))
 		except IndexError:
 			days.append(str(dt.datetime.weekday(dt.datetime.fromtimestamp(day["time"])) + 1))
 
 	start_day = time.ctime(response["daily"]["data"][0]["time"]).split(" ")
-	start_day = list(filter(None, start_day)) # required since time.ctime() pads left with an extra space for 1-digit dates
+	start_day = list(filter(None, start_day))  # required since time.ctime() pads left with an extra space for 1-digit dates
 	start_day_pretty = start_day[0] + ' ' + start_day[1] + ' ' + start_day[2]
 
 	end_day = time.ctime(response["daily"]["data"][-1]["time"]).split(" ")
-	end_day = list(filter(None, end_day)) # required since time.ctime() pads left with an extra space for 1-digit dates
+	end_day = list(filter(None, end_day))  # required since time.ctime() pads left with an extra space for 1-digit dates
 	end_day_pretty = end_day[0] + ' ' + end_day[1] + ' ' + end_day[2]
 
 	period = start_day_pretty + " - " + end_day_pretty
@@ -108,22 +108,23 @@ def plot_weekly():
 	for day, low, high in zip(days, lows, highs):
 		plot_data.append(day + "\t" + low + "\t" + high + "\n")
 
-	gnuplot = subprocess.Popen(['gnuplot','-persist'], stdin=subprocess.PIPE).stdin
+	gnuplot = subprocess.Popen(['gnuplot', '-persist'], stdin=subprocess.PIPE).stdin
 	plot_title = "'High and Low Temperatures, {0}'\n".format(period)
 
 	setup_gnuplot(gnuplot, plot_title, days[0], days[-1], 0, 100)
 
 	gnuplot.write("plot '-' u 1:2 w l, '-' u 1:3 w l\n".encode())
-	for line in plot_data: # iterate through once for the lows 
+	for line in plot_data:  # iterate through once for the lows
 		gnuplot.write(line.encode())
-	gnuplot.write("e\n".encode()) # 'e' is the end-of-input marker for gnuplot
-	for line in plot_data: # then again for the highs (per gnuplot docs)
+	gnuplot.write("e\n".encode())  # 'e' is the end-of-input marker for gnuplot
+	for line in plot_data:  # then again for the highs (per gnuplot docs)
 		gnuplot.write(line.encode())
 	gnuplot.write("e\n".encode())
 	gnuplot.flush()
 
+
 def setup_gnuplot(gnuplot_proc, title, xmin, xmax, ymin, ymax):
-	gnuplot_proc.write("set terminal dumb size 79, 26\n".encode()) # allows space for title and temp increments of 5
+	gnuplot_proc.write("set terminal dumb size 79, 26\n".encode())  # allows space for title and temp increments of 5
 	gnuplot_proc.write("set title {0}\n".format(title).encode())
 	gnuplot_proc.write("set nokey\n".encode())
 	gnuplot_proc.write("set xdtics\n".encode())
@@ -147,6 +148,7 @@ def display_current_weather():
 	print("Chance of precipitation: {0}%".format(chance_of_rain))
 	print("Intensity: {0}".format(intensity))
 	print()
+
 
 def display_hourly_forecast():
 	day_summary = response["hourly"]["summary"]
@@ -178,6 +180,7 @@ def display_hourly_forecast():
 		])
 
 	print(table)
+
 
 def display_weekly_forecast():
 	week_summary = response["daily"]["summary"]

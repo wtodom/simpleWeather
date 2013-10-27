@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 """
 A simple command-line weather app using Python 3 and following modules:
 
@@ -43,16 +43,16 @@ with open(os.path.join(os.path.dirname(__file__), "private.json")) as f:
 	api_key = private["api_key"]
 	loc = private["latitude"] + "," + private["longitude"]
 
-	try:
-		ip = requests.get("http://ip.42.pl/raw").text
-		geo_url = "http://freegeoip.net/{0}/{1}".format("json", ip)
-		location_info = requests.get(geo_url).json()
-		longitude = str(location_info["longitude"])
-		latitude = str(location_info["latitude"])
-		loc = latitude + "," + longitude
+try:
+	ip = requests.get("http://ip.42.pl/raw").text
+	geo_url = "http://freegeoip.net/{0}/{1}".format("json", ip)
+	location_info = requests.get(geo_url).json()
+	longitude = str(location_info["longitude"])
+	latitude = str(location_info["latitude"])
+	loc = latitude + "," + longitude
 
-	except Exception as e:
-		print("Failed to detect location. Using default value from private.json")
+except Exception as e:
+	print("Failed to detect location. Using default value from private.json")
 
 parser.set_defaults(debug=False, graphics=False, location=loc, metric=False, today=False, week=False)
 parser.add_option("-d", "--debug", action="store_true", help="show debug messages")
@@ -111,9 +111,19 @@ def plot_weekly():
 		plot_data.append(day + "\t" + low + "\t" + high + "\n")
 
 	gnuplot = subprocess.Popen(['gnuplot', '-persist'], stdin=subprocess.PIPE).stdin
+
+	# Find the next value mod 5 == 0 next to the plot data's minimum and maximum 
+	plot_min = int(round(min(float(x) for x in lows) / 5.0) * 5.0) - 5
+	plot_max = int(round(max(float(x) for x in highs) / 5.0) * 5.0) + 5
+
+	# adjust the plot height so that y-axis spacing is consistent
+	plot_height = int((plot_max - plot_min) / 2.5) + 6
+
+	gnuplot = subprocess.Popen(['gnuplot', '-persist'], stdin=subprocess.PIPE).stdin
+
 	plot_title = "'High and Low Temperatures, {0}'\n".format(period)
 
-	setup_gnuplot(gnuplot, plot_title, days[0], days[-1], 0, 100)
+	setup_gnuplot(gnuplot, plot_title, plot_height, days[0], days[-1], plot_min, plot_max)
 
 	gnuplot.write("plot '-' u 1:2 w l, '-' u 1:3 w l\n".encode())
 	for line in plot_data:  # iterate through once for the lows
@@ -125,8 +135,8 @@ def plot_weekly():
 	gnuplot.flush()
 
 
-def setup_gnuplot(gnuplot_proc, title, xmin, xmax, ymin, ymax):
-	gnuplot_proc.write("set terminal dumb size 79, 26\n".encode())  # allows space for title and temp increments of 5
+def setup_gnuplot(gnuplot_proc, title, height, xmin, xmax, ymin, ymax):
+	gnuplot_proc.write("set terminal dumb size 79, {0}\n".format(height).encode())  # allows space for title and temp increments of 5
 	gnuplot_proc.write("set title {0}\n".format(title).encode())
 	gnuplot_proc.write("set nokey\n".encode())
 	gnuplot_proc.write("set xdtics\n".encode())

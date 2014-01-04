@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 """
 A simple command-line weather app using Python 3 and following modules:
 
@@ -54,7 +54,7 @@ try:
 except Exception as e:
 	print("Failed to detect location. Using default value from private.json")
 
-parser.set_defaults(debug=False, graphics=False, location=loc, metric=False, today=False, week=False)
+parser.set_defaults(debug=False, graphics=False, location="", metric=False, today=False, week=False)
 parser.add_option("-d", "--debug", action="store_true", help="show debug messages")
 parser.add_option("-g", "--graphics", action="store_true", help="display visuals for weekly forecasts")
 parser.add_option("-l", "--location", help="specify a location other than the default")
@@ -68,6 +68,14 @@ if options.debug:
 	print()
 	print("Options: " + str(options))
 	print("Args: " + str(args))
+
+if options.location:
+	loc_url = "http://maps.googleapis.com/maps/api/geocode/json?address=M{0}&sensor=false".format(options.location)
+	loc_info = requests.get(loc_url).json()
+	lat_long = loc_info["results"][0]["geometry"]["location"]
+	latitude = lat_long["lat"]
+	longitude = lat_long["lng"]
+	loc = str(latitude) + "," + str(longitude)
 
 url = "https://api.forecast.io/forecast/{0}/{1}".format(api_key, loc)
 
@@ -112,7 +120,7 @@ def plot_weekly():
 
 	gnuplot = subprocess.Popen(['gnuplot', '-persist'], stdin=subprocess.PIPE).stdin
 
-	# Find the next value mod 5 == 0 next to the plot data's minimum and maximum 
+	# Find the next value mod 5 == 0 next to the plot data's minimum and maximum
 	plot_min = int(round(min(float(x) for x in lows) / 5.0) * 5.0) - 5
 	plot_max = int(round(max(float(x) for x in highs) / 5.0) * 5.0) + 5
 

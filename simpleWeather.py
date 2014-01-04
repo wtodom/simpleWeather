@@ -10,6 +10,7 @@ https://pypi.python.org/pypi/PrettyTable
 
 Major thanks to the creators of the following APIs:
 
+https://developers.google.com/maps/documentation/geocoding/
 https://developer.forecast.io/
 http://freegeoip.net/
 http://ip.42.pl

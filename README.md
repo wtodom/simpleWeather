@@ -36,7 +36,7 @@ or `--help` flag.
 
 #### I like it, but it's annoying having to go to a special directory just to check the weather.
 
-If you'd like to be able to run the script from anywhere, put the following line in your `.bashrc`, `.bash_profile`, or whichever file is appropriate for the shell you use. Don't forget to make the appropriate substitutions for the terms in all caps. 
+If you'd like to be able to run the script from anywhere, put the following line in your `.bashrc`, `.bash_profile`, or whichever file is appropriate for the shell you use. Don't forget to make the appropriate substitutions for the terms in all caps.
 
 	alias NAME_YOU_WANT_TO_TYPE='PYTHON3_COMMAND PATH/TO/simpleWeather.py'
 

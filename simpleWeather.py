@@ -167,7 +167,6 @@ def display_current_weather():
 	print("Current temperature: {0}".format(current_temp) + " " + degrees[options.metric])
 	print("Winds: {0} ".format(current_wind) + speed[options.metric])
 	print("Chance of precipitation: {0}%".format(chance_of_rain))
-	print("Intensity: {0}".format(intensity))
 	print()
 
 
@@ -181,7 +180,6 @@ def display_hourly_forecast():
 		"Time",
 		"Summary",
 		"Precipitation",
-		"Intensity",
 		"Temperature",
 		"Wind",
 		"Humidity"
@@ -194,7 +192,6 @@ def display_hourly_forecast():
 			short_dt,
 			hour["summary"],
 			str(int(hour["precipProbability"]*100)) + "%",
-			hour["precipIntensity"],
 			str(hour["temperature"]) + " " + degrees[options.metric],
 			str(hour["windSpeed"]) + " " + speed[options.metric],
 			str(int(hour["humidity"]*100)) + "%"
@@ -213,7 +210,6 @@ def display_weekly_forecast():
 		"Day",
 		"Summary",
 		"Precipitation",
-		"Intensity",
 		"High",
 		"Low",
 		"Wind",
@@ -227,7 +223,6 @@ def display_weekly_forecast():
 			short_dt,
 			day["summary"],
 			str(int(day["precipProbability"]*100)) + "%",
-			day["precipIntensity"],
 			str(day["temperatureMax"]) + " " + degrees[options.metric],
 			str(day["temperatureMin"]) + " " + degrees[options.metric],
 			str(day["windSpeed"]) + " " + speed[options.metric],

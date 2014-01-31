@@ -51,7 +51,6 @@ try:
 	longitude = str(location_info["longitude"])
 	latitude = str(location_info["latitude"])
 	loc = latitude + "," + longitude
-
 except Exception as e:
 	print("Failed to detect location. Using default value from private.json")
 
@@ -160,7 +159,6 @@ def display_current_weather():
 	current_temp = response["currently"]["temperature"]
 	current_wind = response["currently"]["windSpeed"]
 	chance_of_rain = response["currently"]["precipProbability"]
-	intensity = response["currently"]["precipIntensity"]
 
 	print()
 	print("Current conditions: {0}".format(summary))

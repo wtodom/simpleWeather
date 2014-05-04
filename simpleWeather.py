@@ -54,11 +54,12 @@ try:
 except Exception as e:
 	print("Failed to detect location. Using default value from private.json")
 
-parser.set_defaults(debug=False, graphics=False, location="", metric=False, today=False, week=False)
+parser.set_defaults(debug=False, graphics=False, location="", metric=False, now=False, today=False, week=False)
 parser.add_option("-d", "--debug", action="store_true", help="show debug messages")
 parser.add_option("-g", "--graphics", action="store_true", help="display visuals for weekly forecasts")
 parser.add_option("-l", "--location", help="specify a location other than the default")
 parser.add_option("-m", "--metric", action="store_true", help="use metric rather than imperial units")
+parser.add_option("-n", "--now", action="store_true", help="display the current weather summary")
 parser.add_option("-t", "--today", action="store_true", help="display today's hourly forecast")
 parser.add_option("-w", "--week", action="store_true", help="display the weekly forecast")
 
@@ -229,7 +230,8 @@ def display_weekly_forecast():
 	print(table)
 
 if __name__ == "__main__":
-	display_current_weather()
+	if options.now:
+		display_current_weather()
 	if options.graphics:
 		plot_weekly()
 	if options.today:
